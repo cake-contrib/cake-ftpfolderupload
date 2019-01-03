@@ -3,12 +3,15 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Cake.FtpFolderUpload</PackageId>
-    <Version>0.0.7</Version>
+    <Version>0.0.9</Version>
     <Authors>Jeppe Roi Kristensen</Authors>
     <Company>Jeppe Roi Kristensen</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>0.0.7.0</AssemblyVersion>
-    <FileVersion>0.0.7.0</FileVersion>
+    <AssemblyVersion>0.0.9.0</AssemblyVersion>
+    <FileVersion>0.0.9.0</FileVersion>
+    <Description>This a cake add in for publishing a folder and it's content to a ftp server</Description>
+    <RepositoryUrl>https://github.com/jeppevammenkristensen/cake-ftpfolderupload</RepositoryUrl>
+    <PackageReleaseNotes>Updated specification</PackageReleaseNotes>
 
   </PropertyGroup>
 
