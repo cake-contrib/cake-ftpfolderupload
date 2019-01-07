@@ -28,7 +28,7 @@ namespace Cake.FtpFolderUpload
         }
 
         public void UploadFolder(DirectoryPath folder, string ftpServer, string userName, string password,
-            Func<IFile, bool> filterPredicate = null)
+            Func<IFile, bool> filterPredicate = null, Func<IFile, object> sort = null)
         {
             if (folder == null) throw new ArgumentNullException(nameof(folder));
             if (ftpServer == null) throw new ArgumentNullException(nameof(ftpServer));
@@ -49,6 +49,11 @@ namespace Cake.FtpFolderUpload
             if (filterPredicate != null)
             {
                 files = files.Where(filterPredicate);
+            }
+
+            if (sort != null)
+            {
+                files = files.OrderBy(sort);
             }
 
             var rootPath = folder.IsRelative ? folder.MakeAbsolute(_cakeEnvironment) : folder;
