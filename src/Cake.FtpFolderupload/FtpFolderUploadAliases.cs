@@ -20,7 +20,7 @@ namespace Cake.FtpFolderUpload
         /// <param name="userName">The user name to connect to the ftp server</param>
         /// <param name="password">The password for connecting to the ftp server</param>
         /// <param name="filterPredicate">A filter to limit the files to upload. If null all files are uploaded</param>
-        /// <param name="sortPredicate"></param>
+        /// <param name="sortPredicate">The sort predicate. Use this to affect order of which files are accessed</param>
         /// <code></code>
         [CakeMethodAlias]
         public static void FtpUploadFolder(this ICakeContext context, DirectoryPath folder, string ftpServer,
