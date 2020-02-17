@@ -1,4 +1,4 @@
-#addin nuget:?package=Cake.Incubator&version=3.1.0
+#addin nuget:?package=Cake.Incubator&version=5.1.0
 ///////////////////////////////////////////////////////////////////////////////
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -34,7 +34,7 @@ Task("UpdateVersion")
    .Does(() => {
       
       var file = CsProjPath;
-      Information(file.Dump());
+      Information(file.FullPath);
       var path = file.FullPath;
       
       var result = XElement.Load(path);

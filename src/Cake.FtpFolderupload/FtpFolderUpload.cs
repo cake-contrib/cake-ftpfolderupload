@@ -9,12 +9,12 @@ namespace Cake.FtpFolderUpload
 {
     internal class FtpFolderUpload
     {
-        private static readonly string[] ValidFtpCreateStatuses = new[] {"TRANSFER COMPLETE", "FILE RECEIVE OK"};
+        private static readonly string[] ValidFtpCreateStatuses = new[] { "TRANSFER COMPLETE", "FILE RECEIVE OK" };
 
         private readonly IFileSystem _fileSystem;
         private readonly ICakeEnvironment _cakeEnvironment;
         private readonly ICakeLog _log;
-        
+
         private readonly IEqualityComparer<string> _comparer;
 
         public FtpFolderUpload(IFileSystem fileSystem, ICakeEnvironment cakeEnvironment, ICakeLog log)
@@ -68,7 +68,7 @@ namespace Cake.FtpFolderUpload
                 if (!string.IsNullOrWhiteSpace(directory) && !directoriesVisited.Contains(directory))
                 {
                     _log.Verbose($"Trying to Ensure folderpath {directory }");
-                    EnsureFolder(ftpServer,userName,password,directory);
+                    EnsureFolder(ftpServer, userName, password, directory);
                     directoriesVisited.Add(directory);
                 }
 
@@ -91,7 +91,8 @@ namespace Cake.FtpFolderUpload
 
             }
 
-            _log.Verbose($"Using credentials user : {user}, password: {password}");
+            // originally this displayed the password. Removed so it isn't exposed.
+            _log.Verbose($"Using credentials user : {user}, password: *******");
             ftpUpload.Credentials = new System.Net.NetworkCredential(user, password);
             _log.Verbose("Setting KeepAlive:false, UseBinary : true");
             ftpUpload.KeepAlive = false;
@@ -109,9 +110,9 @@ namespace Cake.FtpFolderUpload
             System.Net.FtpWebResponse uploadResponse = null;
             try
             {
-                uploadResponse = (System.Net.FtpWebResponse) ftpUpload.GetResponse();
+                uploadResponse = (System.Net.FtpWebResponse)ftpUpload.GetResponse();
                 var uploadResponseStatus = (uploadResponse.StatusDescription ?? string.Empty).Trim().ToUpper();
-                if (!ValidFtpCreateStatuses.Any(x => uploadResponseStatus.IndexOf(x,StringComparison.OrdinalIgnoreCase) > -1))
+                if (!ValidFtpCreateStatuses.Any(x => uploadResponseStatus.IndexOf(x, StringComparison.OrdinalIgnoreCase) > -1))
                 {
                     throw new InvalidOperationException(
                         $"Failed to upload file. Returned status {uploadResponseStatus}");
@@ -141,12 +142,8 @@ namespace Cake.FtpFolderUpload
             foreach (var currentFolder in folders)
             {
                 dir += "/" + currentFolder;
-                string uploadResponseStatus = null;
-                var ftpFullPath = string.Format(
-                    "{0}{1}",
-                    ftpUri.TrimEnd('/'),
-                    dir
-                );
+                string uploadResponseStatus;
+                var ftpFullPath = $"{ftpUri.TrimEnd('/')}{dir}";
                 _log.Verbose($"Try creating folder {dir} with {ftpFullPath}");
 
                 var ftpUpload = System.Net.WebRequest.Create(ftpFullPath) as System.Net.FtpWebRequest;
@@ -155,28 +152,28 @@ namespace Cake.FtpFolderUpload
                 {
                     throw new InvalidOperationException($"Failed to create folder {dir} on {ftpFullPath}");
                 }
-                
-                    try
-                    {
 
-                        _log.Verbose($"Using credentials user: {user} password: {password}");
-                        ftpUpload.Credentials = new System.Net.NetworkCredential(user, password);
-                        _log.Verbose("KeepAlive:false, UseBinary:true");
-                        ftpUpload.KeepAlive = false;
-                        ftpUpload.UseBinary = true;
+                try
+                {
 
-                        ftpUpload.Method = System.Net.WebRequestMethods.Ftp.MakeDirectory;
-                        var uploadResponse = (System.Net.FtpWebResponse) ftpUpload.GetResponse();
-                        uploadResponseStatus = (uploadResponse.StatusDescription ?? string.Empty).Trim().ToUpper();
-                        _log.Verbose($"Response {uploadResponseStatus}");
-                        uploadResponse.Close();
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.Verbose($"Folder not created due to exception {ex}. This is most likely ok");
-                    }
+                    _log.Verbose($"Using credentials user: {user} password: {password}");
+                    ftpUpload.Credentials = new System.Net.NetworkCredential(user, password);
+                    _log.Verbose("KeepAlive:false, UseBinary:true");
+                    ftpUpload.KeepAlive = false;
+                    ftpUpload.UseBinary = true;
+
+                    ftpUpload.Method = System.Net.WebRequestMethods.Ftp.MakeDirectory;
+                    var uploadResponse = (System.Net.FtpWebResponse)ftpUpload.GetResponse();
+                    uploadResponseStatus = (uploadResponse.StatusDescription ?? string.Empty).Trim().ToUpper();
+                    _log.Verbose($"Response {uploadResponseStatus}");
+                    uploadResponse.Close();
+                }
+                catch (Exception ex)
+                {
+                    _log.Verbose($"Folder not created due to exception {ex}. This is most likely ok");
                 }
             }
         }
     }
+}
 
